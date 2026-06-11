@@ -1,0 +1,51 @@
+{
+  "app": "CAP",
+  "appRemedyId": "%REMEDY_ID%",
+  "queryGroup": "t_atm_loc_fnl",
+  "zone": "cap_dataproducts_temp",
+  "inputConfigurations": [
+    {
+      "loadType": "%LOADTYPE%",
+      "partitionColumn": "",
+      "dropTable": "%DROP_TABLE%",
+      "emhIntegrate": "%EMH_INTEGRATE%",
+      "sourceTables": [
+        "%mrd_fndd_conformed%.loc_site_atm_h"
+      ],
+      "createTableDynamically": "%CREATE_DYNAMIC%",
+      "useInMemoryComputation": "%USE_IN_MEMORY%",
+      "hiveExternalTablePath": "%TEMP_TABLE_MAPRFS_PATH%",
+      "targetQuery": "select
+atm_id as atm_id,
+au_nr as au_num,
+trim(site_city_nm) as site_city_nm,
+site_st_cd as site_st_cd,
+substring(trim(site_pstl_cd),1,5) as site_pstl_cd,
+efct_dt as eff_dt,
+expr_dt as expir_dt,
+initcap(atm_stat_nm) as atm_stat_nm
+from %mrd_fndd_conformed%.loc_site_atm_h
+where %bus_eff_dt% >= src_efct_dt and %bus_eff_dt% < expr_dt
+and eapp_dct_business_effective_date = '%eapp_dct_business_effective_date%'",
+      "hiveDatabase": "%TEMP_DATABASE%",
+      "hiveTargetTableName": "%TEMP_DATABASE%.t_atm_loc_fnl",
+      "dataMovementControls": {
+        "missingDbObjectCheck": {
+          "required": false
+        },
+        "emptySourceCheck": {
+          "required": false
+        },
+        "deliveryCheck": {
+          "required": false
+        },
+        "duplicateJdbcLoadCheck": {
+          "required": false
+        },
+        "dataVolumeConsistencyCheck": {
+          "required": false
+        }
+      }
+    }
+  ]
+}

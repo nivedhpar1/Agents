@@ -1,0 +1,63 @@
+{
+  "app": "CAP",
+  "appRemedyId": "%REMEDY_ID%",
+  "queryGroup": "t_dsri",
+  "zone": "cap_dataproducts",
+  "auditDbName": "%AUDIT_DATABASE%",
+  "inputConfigurations": [
+    {
+      "loadType": "%LOADTYPE%",
+      "partitionColumn": "",
+      "dropTable": "%DROP_TABLE%",
+      "emhIntegrate": "%EMH_INTEGRATE%",
+      "sourceTables": [
+        "%TEMP_DATABASE%.t_dsri_fnl"
+      ],
+      "createTableDynamically": "%CREATE_DYNAMIC%",
+      "useInMemoryComputation": "%USE_IN_MEMORY%",
+      "hiveExternalTablePath": "%TARGET_TABLE_MAPRFS_PATH%",
+      "targetQuery": "select ecn,
+ethnc_bmg_cd,
+ethnc_etek_wf_desc,
+gndr_etek_cd,lang_etek_cd,
+'BMG' as CAP_SOR_CD,
+'A' as CAP_DELTA_CD,
+%CAP_APP_ID% as CAP_CRTE_BY_ID,
+current_timestamp as CAP_CRTE_DTTM,
+0 as CAP_ERR_FLG_IND,
+'' as CAP_ERR_TXT,
+%CAP_RUN_ID% as CAP_RUN_ID,
+%CAP_BUS_EFF_DT% as CAP_BUS_EFF_DT
+from
+%TEMP_DATABASE%.t_dsri_fnl",
+      "hiveDatabase": "%TARGET_DATABASE%",
+      "hiveTargetTableName": "%TARGET_DATABASE%.t_dsri",
+      "dataMovementControls": {
+        "missingDbObjectCheck": {
+          "required": "%MISSING_DB_OBJECT_CHECK%",
+          "isFailJobOnError": "%MISSING_DB_OBJECT_CHECK_FAILURE_FLAG%"
+        },
+        "emptySourceCheck": {
+          "required": "%EMPTY_SOURCE_CHECK%",
+          "isFailJobOnError": "%EMPTY_SOURCE_CHECK_FAILURE_FLAG%"
+        },
+        "deliveryCheck": {
+          "required": "%DELIVERY_CHECK%",
+          "SLA": "%DELIVERY_CHECK_SLA%",
+          "isFailJobOnError": "%DELIVERY_CHECK_FAILURE_FLAG%"
+        },
+        "duplicateJdbcLoadCheck": {
+          "required": "%DUPLICATE_JDBC_LOAD_CHECK%",
+          "isFailJobOnError": "%DUPLICATE_JDBC_LOAD_CHECK_FAILURE_FLAG%"
+        },
+        "dataVolumeConsistencyCheck": {
+          "required": "%DATA_VOLUME_CONSISTENCY_CHECK%",
+          "upperThreshold": "%UPPER_THRESHOLD%",
+          "lowerThreshold": "%LOWER_THRESHOLD%",
+          "numPastDays": "%NUM_PAST_DAYS%",
+          "isFailJobOnError": "%DATA_VOLUME_CONSISTENCY_CHECK_FAILURE_FLAG%"
+        }
+      }
+    }
+  ]
+}

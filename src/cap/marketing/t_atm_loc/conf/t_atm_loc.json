@@ -1,0 +1,40 @@
+{
+  "app": "CAP",
+  "appRemedyId": "%REMEDY_ID%",
+  "queryGroup": "t_atm_loc",
+  "zone": "cap_dataproducts",
+  "inputConfigurations": [
+    {
+      "loadType": "%LOADTYPE%",
+      "partitionColumn": "CAP_BUS_EFF_DT",
+      "dropTable": "%DROP_TABLE%",
+      "emhIntegrate": "%EMH_INTEGRATE%",
+      "sourceTables": [
+        "%TEMP_DATABASE%.t_atm_loc_fnl"
+      ],
+      "createTableDynamically": "%CREATE_DYNAMIC%",
+      "useInMemoryComputation": "%USE_IN_MEMORY%",
+      "hiveExternalTablePath": "%TARGET_TABLE_MAPRFS_PATH%",
+      "targetQuery": "select atm_id as atm_id, au_num as au_num, site_city_nm as site_city_nm, site_st_cd as site_st_cd, site_pstl_cd as site_pstl_cd, eff_dt as eff_dt, expir_dt as expir_dt, atm_stat_nm as atm_stat_nm, 'RDMA' as CAP_SOR_CD, '' as CAP_DELTA_CD, %CAP_APP_ID% as CAP_CRTE_BY_ID, current_timestamp as CAP_CRTE_DTTM, 0 as CAP_ERR_FLG_IND, '' as CAP_ERR_TXT, %CAP_RUN_ID% as CAP_RUN_ID, %CAP_BUS_EFF_DT% as CAP_BUS_EFF_DT from %TEMP_DATABASE%.t_atm_loc_fnl",
+      "hiveDatabase": "%TARGET_DATABASE%",
+      "hiveTargetTableName": "%TARGET_DATABASE%.t_atm_loc",
+      "dataMovementControls": {
+        "missingDbObjectCheck": {
+          "required": false
+        },
+        "emptySourceCheck": {
+          "required": false
+        },
+        "deliveryCheck": {
+          "required": false
+        },
+        "duplicatedDbLoadCheck": {
+          "required": false
+        },
+        "dataVolumeConsistencyCheck": {
+          "required": false
+        }
+      }
+    }
+  ]
+}

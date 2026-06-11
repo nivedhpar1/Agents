@@ -1,0 +1,49 @@
+{
+  "app": "CAP",
+  "appRemedyId": "REMEDY IDA",
+  "queryGroup": "t_dsrl_fnl",
+  "zone": "capad_products_temp",
+  "auditDbName": "%AUDIT_DATABASE%",
+  "inputConfigurations": [
+    {
+      "loadType": "LOADTYPE",
+      "partitionColumn": "",
+      "dropTable": "DROP_TABLE",
+      "emitIntegrate": "TERM_INTEGRATE",
+      "sourceTables": [
+        "%SRC_DB%.%SRC_TB_1%,%SRC_DB%.%SRC_TB_2%,%SRC_DB%.bmgeth_ref_eth_cd_curr_etek"
+      ],
+      "createTableDynamically": "CREATE_DYNAMIC",
+      "useInMemoryComputation": "USE_IN_MEMORY",
+      "hiveExternalTablePath": "%TEMP_TABLE_MRPFS_PATH",
+      "targetQuery": "With ethnicity as(
+	select a.cust_num as ecn, a.eth_etek_wf_cd as eth_bmg_cd, case when a.first_name is not null and a.middle_name is not null and a.last_name is not null and a.zip <> '00000' and a.zip4 <> '0000' and a.eth_etek_cd not in ('zz','uc','00') then 1 when a.first_name is not null and a.middle_name is null and a.last_name is not null and a.zip <> '00000' and a.zip4 <> '0000' and a.eth_etek_cd not in ('zz','uc','00') then 2 when a.first_name is not null and a.middle_name is not null and a.last_name is not null and a.zip <> '00000' and a.zip4 <> '0000' and a.eth_etek_cd in ('zz','uc','00') then 3 when a.eth_etek_cd not in ('zz','uc','00') then 4 else 5 end as quality_cd, asof_yyyymm, load_dt, gender_etek_cd, lang_etek_cd, e.eth_etek_wf_desc from (
+	select cust_num, cust_co_id, eth_etek_cd, gender_etek_cd, lang_etek_cd, first_name, middle_name, last_name, zip, zip4, asof_yyyymm, load_dt from %SRC_DB_cur%.%SRC_TB_1% union select cust_num, cust_co_id, eth_etek_cd, gender_etek_cd, lang_etek_cd, first_name, middle_name, last_name, zip, zip4, asof_yyyymm, load_dt from %SRC_DB_cur%.%SRC_TB_2% ) a join (select eth_etek_cd,eth_etek_wf_cd,eth_etek_wf_desc from %SRC_DB%.bmgeth_ref_eth_cd_curr_etek where eapp_dt_business_effective_date = %EAPP_BUS_EFF_DT% )e on a.eth_etek_cd = e.eth_etek_cd), 
+
+cnfrd as (
+ select ecn, eth_bmg_cd, eth_etek_wf_desc, gender_etek_cd, lang_etek_cd, dense_rank() over (partition by ecn order by quality_cd, asof_yyyymm desc, load_dt desc) rnk from ethnicity )
+ 
+ select ecn as ECN, eth_bmg_cd as ETHNC_BMG_CD, eth_etek_wf_desc as ETHNC_ETEK_WF_DESC, gender_etek_cd as GNDR_ETEK_CD, lang_etek_cd as LANG_ETK_CD from cnfrd where rnk = 1",
+      "hiveDatabase": "%TEMP_DATABASE%",
+      "hiveTargetTableName": "%TEMP_DATABASE%.t_dsrl_fnl",
+      "dataMovementControls": {
+        "missingObjectCheck": {
+          "required": false
+        },
+        "emptySourceCheck": {
+          "required": false
+        },
+        "deliveryCheck": {
+          "required": false
+        },
+        "duplicateObjectCheck": {
+          "required": false
+        },
+        "dataVolumeConsistencyCheck": {
+          "required": false
+        }
+      }
+    }
+  ]
+}
+
