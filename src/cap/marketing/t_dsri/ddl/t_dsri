@@ -1,0 +1,26 @@
+CREATE EXTERNAL TABLE IF NOT EXISTS cap_dataproducts.t_dsri (
+  ethnc_bmg_cd     STRING        COMMENT 'Ethnic code',
+  ethnc_etek_wf_desc      STRING        COMMENT 'Ethnic description',
+  gndr_etek_cd       STRING        COMMENT 'Government declared Ethnic code',
+  lang_etek_cd           STRING        COMMENT 'Language spoken by the Ethnicity',
+  CAP_SOR_CD      TIMESTAMP     COMMENT 'Audit - Source Record creation',
+  CAP_DELTA_CD      TIMESTAMP     COMMENT 'Audit',
+  CAP_CRTE_BY_ID	BIGINT	COMMENT 'Audit',
+  CAP_CRTE_DTTM	TIMESTAMP	COMMENT 'Audit',
+  CAP_ERR_FLG_IND	BIGINT	COMMENT 'Audit',
+  CAP_ERR_TXT	STRING	COMMENT 'Audit',
+  CAP_RUN_ID	STRING	COMMENT 'Audit',
+  CAP_BUS_EFF_DT	TIMESTAMP	COMMENT 'Audit'
+
+)
+COMMENT 'dsri master table for Ethnicity details like code, description, ethnicity related language'
+PARTITIONED BY (
+  ethnc_bmg_cd              BIGINT        COMMENT 'Partition ethnic code'
+)
+STORED AS PARQUET
+LOCATION '/user/hive/warehouse/cap_dataproducts/t_dsri'
+TBLPROPERTIES (
+  'parquet.compression' = 'SNAPPY',
+  'creator'             = 'data_engineering',
+  'created_date'        = '2024-01-01'
+);
