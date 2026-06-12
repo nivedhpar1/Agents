@@ -18,9 +18,9 @@
       "targetQuery": "select
 bank_id as bank_id,
 au_nr as au_num,
-trim(site_city_nm) as site_city_nm,
-site_st_cd as site_st_cd,
-substring(trim(site_pstl_cd),1,5) as site_pstl_cd,
+trim(bank_site_city_nm) as bank_site_city_nm,
+bank_site_st_cd as bank_site_st_cd,
+substring(trim(bank_site_pstl_cd),1,5) as bank_site_pstl_cd,
 efct_dt as eff_dt,
 expr_dt as expir_dt,
 initcap(bank_stat_nm) as bank_stat_nm
